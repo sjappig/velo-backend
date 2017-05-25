@@ -3,12 +3,13 @@ use chrono::Local;
 use chrono::TimeZone;
 use chrono;
 use postgres;
+use serde::ser::{Serialize, Serializer, SerializeStruct};
 use std::error::Error;
 use std::time::Duration;
 
 pub type Id = String;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub struct Game {
     pub start_time: DateTime<Local>,
     pub duration: Duration,
@@ -61,6 +62,19 @@ impl Game {
                      });
         }
         ret
+    }
+}
+
+impl Serialize for Game {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("Game", 4)?;
+        state.serialize_field("winner", &self.winner)?;
+        state.serialize_field("loser", &self.loser)?;
+        state.serialize_field("start_time", &self.start_time)?;
+        state.serialize_field("duration", &self.duration.as_secs())?;
+        state.end()
     }
 }
 

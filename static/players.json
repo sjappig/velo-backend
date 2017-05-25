@@ -1,7 +1,0 @@
-{
-    "players": [
-        {"name": "Ismo", "elo": 1543, "id": "foo"},
-        {"name": "J-P", "elo": 935, "id": "bar"},
-        {"name": "Ronnie", "elo": 2485, "id": "baz"}
-    ]
-}

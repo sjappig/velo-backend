@@ -48,6 +48,18 @@
         return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${d.getHours()}:${d.getMinutes()}`
     }
 
+    /**
+     * Format duration like 1:04:35 or 10:07 or 0:46
+     * @param {*} secs duration in seconds
+     */
+    const formatDuration = function(secs) {
+        const hours = Math.floor(secs / 3600)
+        const minutes = Math.floor((secs % 3600) / 60);
+        const seconds = secs % 60;
+
+        if (hours > 0) return `${hours}:${pad2(minutes)}:${pad2(seconds)}`
+        return `${minutes}:${pad2(seconds)}`
+    }
 
     /// GLOBAL FUNCTIONS
 
@@ -74,7 +86,7 @@
                     GAMES_TABLE.appendChild( 
                         tr( getPlayerName(game.winner),
                             getPlayerName(game.loser),
-                            game.duration,
+                            formatDuration(game.duration),
                             formatDate(game.start_time)))
                 })
             })
