@@ -32,4 +32,3 @@ mod tests {
         assert_eq!(Duration::minutes(1), to_struct(&"kekeke").duration);
     }
 }
-
