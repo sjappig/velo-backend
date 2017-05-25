@@ -9,10 +9,10 @@ pub type Id = String;
 
 #[derive(Debug, Serialize, PartialEq)]
 pub struct Game {
-    start_time: DateTime<Local>,
-    duration: Duration,
-    winner: Id,
-    loser: Id,
+    pub start_time: DateTime<Local>,
+    pub duration: Duration,
+    pub winner: Id,
+    pub loser: Id,
 }
 
 impl Game {
