@@ -5,7 +5,7 @@ pub type Elo = i16; // realistic range: 500-3000
 
 const UNDEFINED_ELO: Elo = -1;
 
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Player {
     pub name: String,
     pub id: Id,
@@ -13,7 +13,11 @@ pub struct Player {
 }
 
 pub fn get_all() -> Vec<Player> {
-    return vec![ Player{ name: "Ismo".into(), id: "123".into(), elo: 123 } ];
+    return vec![Player {
+                    name: "Ismo".into(),
+                    id: "123".into(),
+                    elo: 123,
+                }];
 }
 
 

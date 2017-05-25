@@ -7,7 +7,7 @@ use std::time::Duration;
 
 pub type Id = String;
 
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Game {
     pub start_time: DateTime<Local>,
     pub duration: Duration,

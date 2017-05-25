@@ -1,19 +1,20 @@
 use game;
 use player;
+use db;
+use rocket::State;
 use rocket::response::{content, NamedFile};
+use rocket_contrib;
 use serde_json;
 use std::path::{Path, PathBuf};
-use std::time::Duration;
-use chrono::Local;
 
 #[derive(Debug, Serialize, PartialEq)]
 struct Games {
-    games: Vec<game::Game>
+    games: Vec<game::Game>,
 }
 
 #[derive(Debug, Serialize, PartialEq)]
 struct Players {
-    players: Vec<player::Player>
+    players: Vec<player::Player>,
 }
 
 #[get("/player")]
@@ -23,8 +24,17 @@ pub fn players() -> content::JSON<String> {
 }
 
 #[get("/player/<id>")]
-pub fn player(id: &str) -> String {
+pub fn player(id: String) -> String {
     "Ismo".into()
+}
+
+#[post("/player", format = "application/json", data = "<player>")]
+pub fn new_player(pool: State<db::ConnectionPool>,
+                  player: rocket_contrib::JSON<player::Player>)
+                  -> content::JSON<String> {
+    let conn = pool.get().unwrap();
+    db::insert_player(&conn, &player).unwrap();
+    content::JSON("jee".into())
 }
 
 #[get("/game")]

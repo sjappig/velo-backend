@@ -1,5 +1,6 @@
-#![feature(custom_attribute, plugin)]
+#![feature(custom_attribute, custom_derive, plugin)]
 #![plugin(rocket_codegen)]
+#![allow(unmounted_route)]
 
 #[macro_use]
 extern crate lazy_static;
@@ -10,9 +11,10 @@ extern crate r2d2;
 extern crate r2d2_postgres;
 extern crate regex;
 extern crate rocket;
-extern crate serde;
+extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
+extern crate serde;
 extern crate serde_json;
 
 mod db;
@@ -29,6 +31,7 @@ fn main() {
                        routes![handlers::root,
                                handlers::players,
                                handlers::player,
+                               handlers::new_player,
                                handlers::games,
                                handlers::files])
                 .catch(errors![handlers::not_found])
