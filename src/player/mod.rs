@@ -12,6 +12,11 @@ pub struct Player {
     pub elo: Elo,
 }
 
+pub fn get_all() -> Vec<Player> {
+    return vec![ Player{ name: "Ismo".into(), id: "123".into(), elo: 123 } ];
+}
+
+
 impl Player {
     pub fn parse(tommi_line: &str) -> Result<Player, String> {
         lazy_static! {

@@ -1,5 +1,5 @@
-use game::Game;
-use player::Player;
+use game;
+use player;
 use rocket::response::{content, NamedFile};
 use serde_json;
 use std::path::{Path, PathBuf};
@@ -8,17 +8,17 @@ use chrono::Local;
 
 #[derive(Debug, Serialize, PartialEq)]
 struct Games {
-    games: Vec<Game>
+    games: Vec<game::Game>
 }
 
 #[derive(Debug, Serialize, PartialEq)]
 struct Players {
-    players: Vec<Player>
+    players: Vec<player::Player>
 }
 
 #[get("/player")]
 pub fn players() -> content::JSON<String> {
-    let ret = Players { players: vec![ Player{ name: "Ismo".into(), id: "123".into(), elo: 123 } ] };
+    let ret = Players { players: player::get_all() };
     content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
@@ -29,7 +29,7 @@ pub fn player(id: &str) -> String {
 
 #[get("/game")]
 pub fn games() -> content::JSON<String> {
-    let ret = Games { games: vec![ Game{ start_time: Local::now(), duration: Duration::from_secs(1), winner: "123".into(), loser: "567".into() } ] };
+    let ret = Games { games: game::get_all() };
     content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
