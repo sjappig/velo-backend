@@ -1,0 +1,8 @@
+[package]
+authors = ["Antti Keränen <detegr@gmail.com>"]
+name = "velo-backend"
+version = "0.1.0"
+
+[dependencies]
+rocket = "0.2.6"
+rocket_codegen = "0.2.6"
