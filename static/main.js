@@ -1,7 +1,7 @@
 // a stupid implementation of Velo stats listing
 {
-    const PLAYERS_URI = "/players.json"
-    const GAMES_URI = "/games.json"
+    const PLAYERS_URI = "/player"
+    const GAMES_URI = "/game"
 
     const PLAYERS_TABLE = document.querySelector("#players > tbody")
     const GAMES_TABLE = document.querySelector("#games > tbody")
