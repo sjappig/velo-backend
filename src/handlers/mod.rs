@@ -1,7 +1,7 @@
 use rocket::response::{content, NamedFile};
 use std::path::{Path, PathBuf};
 
-#[get("/players")]
+#[get("/player")]
 pub fn players() -> String {
     "Hello world!".into()
 }
