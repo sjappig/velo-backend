@@ -1,7 +1,8 @@
-use chrono;
 use chrono::DateTime;
 use chrono::Local;
 use chrono::TimeZone;
+use chrono;
+use postgres;
 use std::error::Error;
 use std::time::Duration;
 
@@ -13,14 +14,6 @@ pub struct Game {
     pub duration: Duration,
     pub winner: Id,
     pub loser: Id,
-}
-
-pub fn get_all() -> Vec<Game> {
-    return vec![ Game{ start_time: Local::now(), duration: Duration::from_secs(1), winner: "123".into(), loser: "567".into() } ];
-}
-
-pub fn save(entity: &Game) {
-    println!("KEKEKEK");
 }
 
 impl Game {
@@ -55,6 +48,19 @@ impl Game {
                winner: winner.into(),
                loser: loser.into(),
            })
+    }
+
+    pub fn get_all(conn: &postgres::Connection) -> Vec<Game> {
+        let mut ret = vec![];
+        for row in conn.query("SELECT * FROM games", &[]).unwrap().iter() {
+            ret.push(Game {
+                         winner: row.get(1),
+                         loser: row.get(2),
+                         start_time: row.get(3),
+                         duration: Duration::from_secs(row.get::<usize, i32>(4) as u64),
+                     });
+        }
+        ret
     }
 }
 

@@ -1,6 +1,6 @@
-use game;
-use player;
 use db;
+use game::Game;
+use player::Player;
 use rocket::State;
 use rocket::response::{content, NamedFile};
 use rocket_contrib;
@@ -9,17 +9,18 @@ use std::path::{Path, PathBuf};
 
 #[derive(Debug, Serialize, PartialEq)]
 struct Games {
-    games: Vec<game::Game>,
+    games: Vec<Game>,
 }
 
 #[derive(Debug, Serialize, PartialEq)]
 struct Players {
-    players: Vec<player::Player>,
+    players: Vec<Player>,
 }
 
 #[get("/player")]
-pub fn players() -> content::JSON<String> {
-    let ret = Players { players: player::get_all() };
+pub fn players(pool: State<db::ConnectionPool>) -> content::JSON<String> {
+    let conn = pool.get().unwrap();
+    let ret = Players { players: Player::get_all(&conn) };
     content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
@@ -30,7 +31,7 @@ pub fn player(id: String) -> String {
 
 #[post("/player", format = "application/json", data = "<player>")]
 pub fn new_player(pool: State<db::ConnectionPool>,
-                  player: rocket_contrib::JSON<player::Player>)
+                  player: rocket_contrib::JSON<Player>)
                   -> content::JSON<String> {
     let conn = pool.get().unwrap();
     db::insert_player(&conn, &player).unwrap();
@@ -38,8 +39,9 @@ pub fn new_player(pool: State<db::ConnectionPool>,
 }
 
 #[get("/game")]
-pub fn games() -> content::JSON<String> {
-    let ret = Games { games: game::get_all() };
+pub fn games(pool: State<db::ConnectionPool>) -> content::JSON<String> {
+    let conn = pool.get().unwrap();
+    let ret = Games { games: Game::get_all(&conn) };
     content::JSON(serde_json::to_string(&ret).unwrap())
 }
 

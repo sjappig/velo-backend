@@ -23,5 +23,5 @@ pub fn insert_game(conn: &postgres::Connection, game: &Game) -> postgres::Result
                  &[&game.winner,
                    &game.loser,
                    &game.start_time,
-                   &format!("INTERVAL '{} second'", game.duration.as_secs())])
+                   &(game.duration.as_secs() as i32)])
 }

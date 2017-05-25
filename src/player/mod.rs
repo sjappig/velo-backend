@@ -1,3 +1,4 @@
+use postgres;
 use regex::Regex;
 
 pub type Id = String;
@@ -10,19 +11,6 @@ pub struct Player {
     pub name: String,
     pub id: Id,
     pub elo: Elo,
-}
-
-pub fn get_all() -> Vec<Player> {
-    return vec![Player {
-                    name: "Ismo".into(),
-                    id: "123".into(),
-                    elo: 123,
-                }];
-}
-
-
-pub fn save(entity: &Player) {
-    println!("KEKEKEK");
 }
 
 impl Player {
@@ -45,6 +33,18 @@ impl Player {
             }
             None => Err(format!("Could not parse the player line: {}", tommi_line)),
         }
+    }
+
+    pub fn get_all(conn: &postgres::Connection) -> Vec<Player> {
+        let mut ret = vec![];
+        for row in conn.query("SELECT * FROM players", &[]).unwrap().iter() {
+            ret.push(Player {
+                         name: row.get(1),
+                         id: row.get(0),
+                         elo: row.get::<usize, i32>(3) as Elo,
+                     });
+        }
+        ret
     }
 }
 
