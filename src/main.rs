@@ -8,7 +8,7 @@ extern crate r2d2_diesel;
 extern crate rocket;
 
 mod db;
-mod game_conversion;
+mod game;
 mod handlers;
 
 fn main() {
