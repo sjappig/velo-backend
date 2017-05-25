@@ -1,5 +1,7 @@
 use {diesel, r2d2, r2d2_diesel};
 
+pub mod schema;
+
 pub type ConnectionType = diesel::sqlite::SqliteConnection;
 pub type ConnectionPool = r2d2::Pool<r2d2_diesel::ConnectionManager<ConnectionType>>;
 
