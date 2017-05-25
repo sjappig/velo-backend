@@ -26,7 +26,8 @@ fn main() {
             rocket::ignite()
                 .manage(pool)
                 .mount("/",
-                       routes![handlers::players,
+                       routes![handlers::root,
+                               handlers::players,
                                handlers::player,
                                handlers::games,
                                handlers::files])

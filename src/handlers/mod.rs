@@ -33,6 +33,11 @@ pub fn games() -> content::JSON<String> {
     content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
+#[get("/")]
+pub fn root() -> Option<NamedFile> {
+    NamedFile::open(Path::new("static/index.html")).ok()
+}
+
 #[get("/<file..>", rank=2)]
 pub fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
