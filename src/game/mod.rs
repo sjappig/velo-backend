@@ -19,6 +19,10 @@ pub fn get_all() -> Vec<Game> {
     return vec![ Game{ start_time: Local::now(), duration: Duration::from_secs(1), winner: "123".into(), loser: "567".into() } ];
 }
 
+pub fn save(entity: &Game) {
+    println!("KEKEKEK");
+}
+
 impl Game {
     /// Create new *Game* from string *tommi_line*.
     /// Starting time and duration are rounded down to nearest full second.

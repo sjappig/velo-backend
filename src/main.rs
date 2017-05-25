@@ -22,7 +22,33 @@ mod game;
 mod handlers;
 mod player;
 
+use std::env;
+use std::fs::File;
+use std::io::BufReader;
+use std::io::BufRead;
+
 fn main() {
+    let args: Vec<_> = env::args().collect();
+
+    if args.len() > 1 {
+        if args.len() != 3 {
+            println!("Usage: {} <gamefile> <playerfile>", args[0]);
+            return;
+        }
+
+        let gamefile = File::open(&args[1]).unwrap();
+        let mut gamefilereader = BufReader::new(&gamefile);
+        for line in gamefilereader.lines() {
+            game::save(&game::Game::new(line.unwrap().as_str()).unwrap());
+        }
+
+        let playerfile = File::open(&args[2]).unwrap();
+        let mut playerfilereader = BufReader::new(&playerfile);
+        for line in playerfilereader.lines() {
+            player::save(&player::Player::parse(line.unwrap().as_str()).unwrap());
+        }
+    }
+
     match db::get_connection_pool() {
         Ok(pool) => {
             rocket::ignite()

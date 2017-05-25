@@ -21,6 +21,10 @@ pub fn get_all() -> Vec<Player> {
 }
 
 
+pub fn save(entity: &Player) {
+    println!("KEKEKEK");
+}
+
 impl Player {
     pub fn parse(tommi_line: &str) -> Result<Player, String> {
         lazy_static! {
