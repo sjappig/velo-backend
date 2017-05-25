@@ -8,7 +8,7 @@ const UNDEFINED_ELO: Elo = -1;
 pub struct Player {
     name: String,
     id: Id,
-    elo: Elo
+    elo: Elo,
 }
 
 impl Player {
@@ -24,12 +24,12 @@ impl Player {
                 let name = String::from(&captures[2]);
 
                 Ok(Player {
-                    name: name,
-                    id: id,
-                    elo: UNDEFINED_ELO
-                })
-            },
-            None => Err(format!("Could not parse the player line: {}", tommi_line))
+                       name: name,
+                       id: id,
+                       elo: UNDEFINED_ELO,
+                   })
+            }
+            None => Err(format!("Could not parse the player line: {}", tommi_line)),
         }
     }
 }
@@ -46,7 +46,8 @@ mod tests {
         let player: Player = Player::parse(TEST_LINE).unwrap();
 
         assert_eq!("Ismo", player.name);
-        assert_eq!("yBsgFK65Je24kPStpG60mySQAstqtZytURNqUPb8fXbWNTD93tNCMkl2Jhzv7ymy", player.id);
+        assert_eq!("yBsgFK65Je24kPStpG60mySQAstqtZytURNqUPb8fXbWNTD93tNCMkl2Jhzv7ymy",
+                   player.id);
         assert_eq!(UNDEFINED_ELO, player.elo);
     }
 
@@ -54,7 +55,7 @@ mod tests {
     fn invalid_line_creates_error() {
         match Player::parse(&"THIS LINE IS INVALID") {
             Ok(_) => panic!("Parsing an invalid line should not succeed"),
-            Err(err) => assert!(!err.is_empty())
+            Err(err) => assert!(!err.is_empty()),
         }
     }
 }

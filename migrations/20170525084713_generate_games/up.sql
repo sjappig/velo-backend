@@ -2,6 +2,6 @@ CREATE TABLE games (
 	id INTEGER PRIMARY KEY,
 	winner TEXT NOT NULL,
 	loser TEXT NOT NULL,
-	start_time DATETIME NOT NULL,
-	duration INTEGER NOT NULL
+	start_time TIMESTAMP NOT NULL,
+	duration INTERVAL NOT NULL
 )

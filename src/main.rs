@@ -1,15 +1,12 @@
-#![feature(plugin)]
+#![feature(custom_attribute, plugin)]
 #![plugin(rocket_codegen)]
 
-#[macro_use] extern crate lazy_static;
+#[macro_use]
+extern crate lazy_static;
 
 extern crate chrono;
-#[macro_use]
-extern crate diesel;
-#[macro_use]
-extern crate diesel_codegen;
 extern crate r2d2;
-extern crate r2d2_diesel;
+extern crate r2d2_postgres;
 extern crate regex;
 extern crate rocket;
 extern crate serde;
@@ -27,7 +24,11 @@ fn main() {
         Ok(pool) => {
             rocket::ignite()
                 .manage(pool)
-                .mount("/", routes![handlers::players, handlers::player, handlers::games, handlers::files])
+                .mount("/",
+                       routes![handlers::players,
+                               handlers::player,
+                               handlers::games,
+                               handlers::files])
                 .catch(errors![handlers::not_found])
                 .launch();
         }
