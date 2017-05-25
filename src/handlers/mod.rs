@@ -1,9 +1,12 @@
+use game::Game;
 use rocket::response::{content, NamedFile};
+use serde_json;
 use std::path::{Path, PathBuf};
 
-#[get("/player")]
-pub fn players() -> String {
-    "Hello world!".into()
+#[get("/players")]
+pub fn players() -> content::JSON<String> {
+    let ret: Vec<Game> = vec![];
+    content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
 #[get("/player/<id>")]
