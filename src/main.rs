@@ -1,11 +1,6 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
-
-#[macro_use]
-extern crate log;
-extern crate env_logger;
-
 extern crate chrono;
 extern crate diesel;
 extern crate r2d2;

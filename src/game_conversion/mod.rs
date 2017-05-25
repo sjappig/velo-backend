@@ -12,7 +12,7 @@ pub struct Game {
 }
 
 pub fn to_struct(tommi_line: &str) -> Game {
-    info!("Converting {}", tommi_line);
+    println!("Converting {}", tommi_line);
     Game {
         start_time: Local::now(),
         duration: Duration::minutes(1),
