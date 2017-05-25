@@ -1,11 +1,24 @@
 use game::Game;
+use player::Player;
 use rocket::response::{content, NamedFile};
 use serde_json;
 use std::path::{Path, PathBuf};
+use std::time::Duration;
+use chrono::Local;
 
-#[get("/players")]
+#[derive(Debug, Serialize, PartialEq)]
+struct Games {
+    games: Vec<Game>
+}
+
+#[derive(Debug, Serialize, PartialEq)]
+struct Players {
+    players: Vec<Player>
+}
+
+#[get("/player")]
 pub fn players() -> content::JSON<String> {
-    let ret: Vec<Game> = vec![];
+    let ret = Players { players: vec![ Player{ name: "Ismo".into(), id: "123".into(), elo: 123 } ] };
     content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
@@ -15,8 +28,9 @@ pub fn player(id: &str) -> String {
 }
 
 #[get("/game")]
-pub fn games() -> String {
-    "Hello world!".into()
+pub fn games() -> content::JSON<String> {
+    let ret = Games { games: vec![ Game{ start_time: Local::now(), duration: Duration::from_secs(1), winner: "123".into(), loser: "567".into() } ] };
+    content::JSON(serde_json::to_string(&ret).unwrap())
 }
 
 #[get("/<file..>", rank=2)]

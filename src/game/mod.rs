@@ -16,8 +16,8 @@ pub struct Game {
 }
 
 impl Game {
-    //! Create new *Game* from string *tommi_line*.
-    //! Starting time and duration are rounded down to nearest full second.
+    /// Create new *Game* from string *tommi_line*.
+    /// Starting time and duration are rounded down to nearest full second.
     pub fn new(tommi_line: &str) -> Result<Game, String> {
         println!("Converting {}", tommi_line);
 

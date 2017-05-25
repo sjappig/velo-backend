@@ -5,10 +5,11 @@ pub type Elo = i16; // realistic range: 500-3000
 
 const UNDEFINED_ELO: Elo = -1;
 
+#[derive(Debug, Serialize, PartialEq)]
 pub struct Player {
-    name: String,
-    id: Id,
-    elo: Elo,
+    pub name: String,
+    pub id: Id,
+    pub elo: Elo,
 }
 
 impl Player {
