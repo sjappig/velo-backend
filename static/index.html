@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Velo stats</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous" />
+        <style>
+            body {
+                margin: 0 auto;
+                padding: 1em;
+                max-width: 600px;
+            }
+            .pure-table {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h1>Velo</h1>
+
+
+        <h2>Pelaajat</h2>
+
+        <table id="players" class="pure-table">
+            <thead>
+                <tr>
+                    <td>Nimi</td>
+                    <td>Elo</td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        
+        <h2>Pelihistoria</h2>
+
+        <table id="games" class="pure-table">
+            <thead>
+                <tr>
+                    <td>Voittaja</td>
+                    <td>Häviäjä</td>
+                    <td>Kesto</td>
+                    <td>Päivämäärä</td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+
+        <script src="main.js"></script>
+    </body>
+</html>

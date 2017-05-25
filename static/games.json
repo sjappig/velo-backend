@@ -1,0 +1,20 @@
+{
+    "games": [
+        {
+            "winner": "foo",
+            "loser": "baz",
+            "winner_name": "Ismo",
+            "loser_name": "J-P",
+            "start_time": "2017-05-15T12:30:04+0300",
+            "duration": "10:43"
+        },
+        {
+            "winner": "foo",
+            "loser": "baz",
+            "winner_name": "Ismo",
+            "loser_name": "J-P",
+            "start_time": "2017-05-15T12:41:17+0300",
+            "duration": "2:57"
+        }
+    ]
+}
