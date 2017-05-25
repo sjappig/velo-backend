@@ -53,7 +53,9 @@ impl Game {
 
     pub fn get_all(conn: &postgres::Connection) -> Vec<Game> {
         let mut ret = vec![];
-        for row in conn.query("SELECT * FROM games", &[]).unwrap().iter() {
+        for row in conn.query("SELECT * FROM games order by start_time DESC", &[])
+                .unwrap()
+                .iter() {
             ret.push(Game {
                          winner: row.get(1),
                          loser: row.get(2),
