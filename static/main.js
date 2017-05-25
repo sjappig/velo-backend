@@ -28,6 +28,26 @@
         return id.substring(0,6)
     }
 
+    /**
+     * Zero-pad a positive integer to a (minimum) width of 2.
+     */
+    const pad2 = function(i) {
+        if (i < 10 && i >= 0) {
+            return `0${i}`
+        }
+        return i
+    }
+
+    /**
+     * Format date like "2017-05-15 15:42" (in browser timezone)
+     * 
+     * @param {*} str date in a format understood by the browser, eg. ISO 8601
+     */
+    const formatDate = function(str) {
+        const d = new Date(str);
+        return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${d.getHours()}:${d.getMinutes()}`
+    }
+
 
     /// GLOBAL FUNCTIONS
 
@@ -55,7 +75,7 @@
                         tr( getPlayerName(game.winner),
                             getPlayerName(game.loser),
                             game.duration,
-                            game.start_time))
+                            formatDate(game.start_time)))
                 })
             })
     }
