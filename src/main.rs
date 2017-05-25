@@ -23,7 +23,7 @@ fn main() {
         Ok(pool) => {
             rocket::ignite()
                 .manage(pool)
-                .mount("/", routes![handlers::players, handlers::files])
+                .mount("/", routes![handlers::players, handlers::player, handlers::games, handlers::files])
                 .catch(errors![handlers::not_found])
                 .launch();
         }

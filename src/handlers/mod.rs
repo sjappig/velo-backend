@@ -6,7 +6,17 @@ pub fn players() -> String {
     "Hello world!".into()
 }
 
-#[get("/<file..>")]
+#[get("/player/<id>")]
+pub fn player(id: &str) -> String {
+    "Ismo".into()
+}
+
+#[get("/game")]
+pub fn games() -> String {
+    "Hello world!".into()
+}
+
+#[get("/<file..>", rank=2)]
 pub fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
 }
