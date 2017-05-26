@@ -11,13 +11,13 @@ extern crate r2d2;
 extern crate r2d2_postgres;
 extern crate regex;
 extern crate rocket;
-extern crate rocket_contrib;
+pub extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
-extern crate serde_json;
+pub extern crate serde_json;
 
-mod db;
+pub mod db;
 mod game;
 mod handlers;
 mod player;
@@ -59,10 +59,10 @@ fn main() {
                 .manage(pool)
                 .mount("/",
                        routes![handlers::root,
-                               handlers::players,
-                               handlers::player,
-                               handlers::new_player,
-                               handlers::games,
+                               handlers::player::players,
+                               handlers::player::player,
+                               handlers::player::new_player,
+                               handlers::game::games,
                                handlers::files])
                 .catch(errors![handlers::not_found])
                 .launch();

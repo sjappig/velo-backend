@@ -1,48 +1,17 @@
-use db;
-use game::Game;
-use player::Player;
-use rocket::State;
 use rocket::response::{content, NamedFile};
-use rocket_contrib;
-use serde_json;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Serialize, PartialEq)]
-struct Games {
-    games: Vec<Game>,
-}
+pub mod game;
+pub mod player;
 
-#[derive(Debug, Serialize, PartialEq)]
-struct Players {
-    players: Vec<Player>,
-}
-
-#[get("/player")]
-pub fn players(pool: State<db::ConnectionPool>) -> content::JSON<String> {
-    let conn = pool.get().unwrap();
-    let ret = Players { players: Player::get_all(&conn) };
-    content::JSON(serde_json::to_string(&ret).unwrap())
-}
-
-#[get("/player/<id>")]
-pub fn player(id: String) -> String {
-    "Ismo".into()
-}
-
-#[post("/player", format = "application/json", data = "<player>")]
-pub fn new_player(pool: State<db::ConnectionPool>,
-                  player: rocket_contrib::JSON<Player>)
-                  -> content::JSON<String> {
-    let conn = pool.get().unwrap();
-    db::insert_player(&conn, &player).unwrap();
-    content::JSON("jee".into())
-}
-
-#[get("/game")]
-pub fn games(pool: State<db::ConnectionPool>) -> content::JSON<String> {
-    let conn = pool.get().unwrap();
-    let ret = Games { games: Game::get_all(&conn) };
-    content::JSON(serde_json::to_string(&ret).unwrap())
+/// Use handlers::prelude::* to bring commonly used
+/// handler stuff to a module
+mod prelude {
+    pub use db;
+    pub use rocket::State;
+    pub use rocket::response::content;
+    pub use rocket_contrib;
+    pub use serde_json;
 }
 
 #[get("/")]
