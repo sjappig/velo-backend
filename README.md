@@ -12,6 +12,8 @@ Install `diesel_cli` for database migrations:
 cargo install diesel_cli
 ```
 
+(If you're missing dependencies, try `brew install mysql-connector-c` (MacOS) or `apt-get install libmysqlclient-dev` (Debian))
+
 Run migrations:
 ```
 diesel migration run
