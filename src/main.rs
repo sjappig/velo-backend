@@ -63,6 +63,7 @@ fn main() {
                                handlers::player::player,
                                handlers::player::new_player,
                                handlers::game::games,
+                               handlers::game::new_game,
                                handlers::files])
                 .catch(errors![handlers::not_found])
                 .launch();
