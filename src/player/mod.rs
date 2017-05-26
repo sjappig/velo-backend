@@ -1,7 +1,9 @@
 use postgres;
 use regex::Regex;
 
-pub type Id = String;
+pub mod id;
+use self::id::Id;
+
 pub type Elo = i16; // realistic range: 500-3000
 
 const UNDEFINED_ELO: Elo = -1;
@@ -27,7 +29,7 @@ impl Player {
 
                 Ok(Player {
                        name: name,
-                       id: id,
+                       id: Id::new(&id[..]).unwrap(),
                        elo: UNDEFINED_ELO,
                    })
             }
@@ -40,7 +42,7 @@ impl Player {
         for row in conn.query("SELECT * FROM players", &[]).unwrap().iter() {
             ret.push(Player {
                          name: row.get(1),
-                         id: row.get(0),
+                         id: Id::new(&row.get::<usize, String>(0)[..]).unwrap(),
                          elo: row.get::<usize, i32>(3) as Elo,
                      });
         }

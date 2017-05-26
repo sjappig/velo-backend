@@ -2,9 +2,11 @@ use player::Player;
 use super::prelude::*;
 
 #[get("/player")]
-pub fn players(pool: State<db::ConnectionPool>) -> content::JSON<String> {
+pub fn players(pool: State<db::ConnectionPool>) -> JSON<serde_json::Value> {
     let conn = pool.get().unwrap();
-    content::JSON(serde_json::to_string(&Player::get_all(&conn)).unwrap())
+    JSON(json!({
+                   "players": Player::get_all(&conn)
+               }))
 }
 
 #[get("/player/<id>")]

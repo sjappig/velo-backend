@@ -1,4 +1,4 @@
-#![feature(custom_attribute, custom_derive, plugin)]
+#![feature(ascii_ctype, custom_attribute, custom_derive, plugin)]
 #![plugin(rocket_codegen)]
 #![allow(unmounted_route)]
 
@@ -11,6 +11,7 @@ extern crate r2d2;
 extern crate r2d2_postgres;
 extern crate regex;
 extern crate rocket;
+#[macro_use]
 pub extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;

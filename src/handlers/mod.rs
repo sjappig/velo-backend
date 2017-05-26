@@ -11,6 +11,7 @@ mod prelude {
     pub use rocket::State;
     pub use rocket::response::content;
     pub use rocket_contrib;
+    pub use rocket_contrib::JSON;
     pub use serde_json;
 }
 

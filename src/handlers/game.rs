@@ -2,15 +2,15 @@ use super::prelude::*;
 use game::Game;
 
 #[get("/game")]
-pub fn games(pool: State<db::ConnectionPool>) -> content::JSON<String> {
+pub fn games(pool: State<db::ConnectionPool>) -> JSON<serde_json::Value> {
     let conn = pool.get().unwrap();
-    content::JSON(serde_json::to_string(&Game::get_all(&conn)).unwrap())
+    JSON(json!({
+                   "games": Game::get_all(&conn)
+               }))
 }
 
 #[post("/game", format = "application/json", data = "<game>")]
-pub fn new_game(pool: State<db::ConnectionPool>,
-                game: rocket_contrib::JSON<Game>)
-                -> content::JSON<String> {
+pub fn new_game(pool: State<db::ConnectionPool>, game: JSON<Game>) -> content::JSON<String> {
     let conn = pool.get().unwrap();
     db::insert_game(&conn, &game).unwrap();
     content::JSON("OK".into())
