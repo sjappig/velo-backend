@@ -2,9 +2,8 @@ use player::Player;
 use super::prelude::*;
 
 #[get("/player")]
-pub fn players(pool: State<db::ConnectionPool>) -> Result<JSON<serde_json::Value>, ()> {
-    let conn = pool.get()
-        .map_err(|_| /* TODO: Reasonable error type */ ())?;
+pub fn players(pool: State<db::ConnectionPool>) -> HandlerResult {
+    let conn = pool.get().map_err(super::error_to_json)?;
     Ok(JSON(json!({
                       "players": Player::get_all(&conn)
                   })))
@@ -18,10 +17,11 @@ pub fn player(id: String) -> String {
 #[post("/player", format = "application/json", data = "<player>")]
 pub fn new_player(pool: State<db::ConnectionPool>,
                   player: rocket_contrib::JSON<Player>)
-                  -> Result<content::JSON<String>, ()> {
-    let conn = pool.get()
-        .map_err(|_| /* TODO: Reasonable error type */ ())?;
+                  -> HandlerResult {
+    let conn = pool.get().map_err(super::error_to_json)?;
     db::insert_player(&conn, &player)
-        .map_err(|_| /* TODO: Reasonable error type */())?;
-    Ok(content::JSON("OK".into()))
+        .map_err(super::error_to_json)?;
+    Ok(JSON(json!({
+        "success": true
+    })))
 }

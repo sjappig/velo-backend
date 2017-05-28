@@ -10,9 +10,24 @@ mod prelude {
     pub use db;
     pub use rocket::State;
     pub use rocket::response::content;
-    pub use rocket_contrib;
     pub use rocket_contrib::JSON;
+    pub use rocket_contrib;
     pub use serde_json;
+    pub use std::error::Error;
+    pub use super::HandlerResult;
+}
+
+use self::prelude::*;
+
+/// Result type that contains JSON values for both success and failure
+pub type HandlerResult = Result<JSON<serde_json::Value>, JSON<serde_json::Value>>;
+
+/// Helper function to convert types implementing `std::error::Error` trait to JSON
+fn error_to_json<E: Error>(e: E) -> JSON<serde_json::Value> {
+    JSON(json!({
+        "success": false,
+        "error": e.description()
+    }))
 }
 
 #[get("/")]
