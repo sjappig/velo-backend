@@ -4,9 +4,10 @@ use super::prelude::*;
 #[get("/player")]
 pub fn players(pool: State<db::ConnectionPool>) -> HandlerResult {
     let conn = pool.get().map_err(super::error_to_json)?;
+    let players = Player::get_all(&conn).map_err(super::error_to_json)?;
     Ok(JSON(json!({
-                      "players": Player::get_all(&conn)
-                  })))
+        "players": players,
+    })))
 }
 
 #[get("/player/<id>")]

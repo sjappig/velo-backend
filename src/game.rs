@@ -2,12 +2,12 @@ use chrono::DateTime;
 use chrono::Local;
 use chrono::TimeZone;
 use chrono;
+use error::VeloError;
+use id::Id;
 use postgres;
 use serde::ser::{Serialize, Serializer, SerializeStruct};
 use std::error::Error;
 use std::time::Duration;
-
-pub type Id = String;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Game {
@@ -42,28 +42,40 @@ impl Game {
             tokens[1]
         };
 
+        let winner = Id::new(winner).map_err(|e| e.0)?;
+        let loser = Id::new(loser).map_err(|e| e.0)?;
+
         Ok(Game {
                start_time: Local.ymd(2001, 1, 1).and_hms(0, 0, 0) +
                            chrono::Duration::seconds(timestamp as i64),
                duration: Duration::from_secs(duration as u64),
-               winner: winner.into(),
-               loser: loser.into(),
+               winner,
+               loser,
            })
     }
 
-    pub fn get_all(conn: &postgres::Connection) -> Vec<Game> {
+    pub fn get_all(conn: &postgres::Connection) -> Result<Vec<Game>, VeloError> {
         let mut ret = vec![];
         for row in conn.query("SELECT * FROM games order by start_time DESC", &[])
-                .unwrap()
+                .map_err(|e| VeloError::DbError(e.description().into()))?
                 .iter() {
-            ret.push(Game {
-                         winner: row.get(1),
-                         loser: row.get(2),
-                         start_time: row.get(3),
-                         duration: Duration::from_secs(row.get::<usize, i32>(4) as u64),
-                     });
+            let winner_str: String = row.get(1);
+            let loser_str: String = row.get(2);
+            if let (Ok(winner), Ok(loser)) = (Id::new(&winner_str[..]), Id::new(&loser_str[..])) {
+                ret.push(Game {
+                             winner,
+                             loser,
+                             start_time: row.get(3),
+                             duration: Duration::from_secs(row.get::<usize, i32>(4) as u64),
+                         });
+            } else {
+                // TODO: Logging
+                println!("Could not add game between {} and {}",
+                         winner_str,
+                         loser_str);
+            }
         }
-        ret
+        Ok(ret)
     }
 }
 
@@ -110,10 +122,8 @@ mod tests {
                                start_time: Local.ymd(2001, 1, 1).and_hms(0, 0, 0) +
                                            chrono::Duration::seconds(516099153),
                                duration: Duration::from_secs(337),
-                               winner: "1hMduK6YEqJeAeZvd2bI9mI5bWSnRSZihsH5XdjdpViWPZiGK5cH8L0JVkbTEb0A"
-                                   .into(),
-                               loser: "muBF4sNpDCwLqLiVne7M8WtW6DJg1OQrbumx1HpBmkfVVsv7c1iNhHf3SBNNQd6s"
-                                   .into(),
+                               winner: Id::new("1hMduK6YEqJeAeZvd2bI9mI5bWSnRSZihsH5XdjdpViWPZiGK5cH8L0JVkbTEb0A").unwrap(),
+                               loser: Id::new("muBF4sNpDCwLqLiVne7M8WtW6DJg1OQrbumx1HpBmkfVVsv7c1iNhHf3SBNNQd6s").unwrap(),
                            },
                            result)
             }

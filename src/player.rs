@@ -1,8 +1,8 @@
+use error::VeloError;
+use id::Id;
 use postgres;
 use regex::Regex;
-
-pub mod id;
-use self::id::Id;
+use std::error::Error;
 
 pub type Elo = i16; // realistic range: 500-3000
 
@@ -37,16 +37,23 @@ impl Player {
         }
     }
 
-    pub fn get_all(conn: &postgres::Connection) -> Vec<Player> {
+    pub fn get_all(conn: &postgres::Connection) -> Result<Vec<Player>, VeloError> {
         let mut ret = vec![];
-        for row in conn.query("SELECT * FROM players", &[]).unwrap().iter() {
-            ret.push(Player {
-                         name: row.get(1),
-                         id: Id::new(&row.get::<usize, String>(0)[..]).unwrap(),
-                         elo: row.get::<usize, i32>(3) as Elo,
-                     });
+        for row in conn.query("SELECT * FROM players", &[])
+                .map_err(|e| VeloError::DbError(e.description().into()))?
+                .iter() {
+            let id_str: String = row.get(0);
+            if let Ok(id) = Id::new(&id_str[..]) {
+                ret.push(Player {
+                             id,
+                             name: row.get(1),
+                             elo: row.get::<usize, i32>(3) as Elo,
+                         });
+            } else {
+                println!("Could not add player with id: {}", id_str);
+            }
         }
-        ret
+        Ok(ret)
     }
 }
 
@@ -63,7 +70,7 @@ mod tests {
 
         assert_eq!("Ismo", player.name);
         assert_eq!("yBsgFK65Je24kPStpG60mySQAstqtZytURNqUPb8fXbWNTD93tNCMkl2Jhzv7ymy",
-                   player.id);
+                   *player.id);
         assert_eq!(UNDEFINED_ELO, player.elo);
     }
 

@@ -18,10 +18,12 @@ extern crate serde_derive;
 extern crate serde;
 pub extern crate serde_json;
 
-pub mod db;
+mod error;
 mod game;
 mod handlers;
+mod id;
 mod player;
+pub mod db;
 
 use std::env;
 use std::fs::File;

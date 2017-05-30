@@ -20,8 +20,8 @@ pub fn insert_player(conn: &postgres::Connection, player: &Player) -> postgres::
 
 pub fn insert_game(conn: &postgres::Connection, game: &Game) -> postgres::Result<u64> {
     conn.execute("INSERT INTO games(winner, loser, start_time, duration) VALUES($1, $2, $3, $4)",
-                 &[&game.winner,
-                   &game.loser,
+                 &[&*game.winner,
+                   &*game.loser,
                    &game.start_time,
                    &(game.duration.as_secs() as i32)])
 }
