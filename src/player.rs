@@ -44,7 +44,7 @@ impl Player {
                 ret.push(Player {
                              id,
                              name: row.get(1),
-                             elo: row.get::<usize, i32>(3) as Elo,
+                             elo: row.get::<usize, f64>(3) as Elo,
                          });
             } else {
                 println!("Could not add player with id: {}", id_str);
