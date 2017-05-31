@@ -1,11 +1,20 @@
-use std::error::Error;
 use std::fmt;
 
-#[derive(Debug)]
-pub enum VeloError {
-    DbError(String),
+#[derive(Debug, error_chain)]
+pub enum ErrorKind {
+    Msg(String),
+
+    #[error_chain(foreign)]
+    ParseError(::std::num::ParseFloatError),
+
+    #[error_chain(foreign)]
+    DbTimeout(::r2d2::GetTimeout),
+
+    #[error_chain(foreign)]
+    DbError(::postgres::error::Error),
 }
 
+/*
 impl fmt::Display for VeloError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let err = match *self {
@@ -14,11 +23,4 @@ impl fmt::Display for VeloError {
         write!(fmt, "Velo error: {}", err)
     }
 }
-
-impl Error for VeloError {
-    fn description(&self) -> &str {
-        match *self {
-            VeloError::DbError(ref err) => err,
-        }
-    }
-}
+*/

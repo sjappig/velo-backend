@@ -2,11 +2,10 @@ use chrono::DateTime;
 use chrono::Local;
 use chrono::TimeZone;
 use chrono;
-use error::VeloError;
+use error;
 use id::Id;
 use postgres;
 use serde::ser::{Serialize, Serializer, SerializeStruct};
-use std::error::Error;
 use std::time::Duration;
 
 #[derive(Debug, Deserialize, PartialEq)]
@@ -20,21 +19,17 @@ pub struct Game {
 impl Game {
     /// Create new *Game* from string *tommi_line*.
     /// Starting time and duration are rounded down to nearest full second.
-    pub fn new(tommi_line: &str) -> Result<Game, String> {
+    pub fn new(tommi_line: &str) -> error::Result<Game> {
         println!("Converting {}", tommi_line);
 
         let tokens: Vec<&str> = tommi_line.split(',').collect();
 
         if tokens.len() != 5 {
-            return Err(format!("Line should have exatcly 5 commas"));
+            return Err(format!("Line should have exactly 5 commas").into());
         }
 
-        let timestamp = tokens[3]
-            .parse::<f64>()
-            .map_err(|e| e.description().to_string())?;
-        let duration = tokens[4]
-            .parse::<f64>()
-            .map_err(|e| e.description().to_string())?;
+        let timestamp = tokens[3].parse::<f64>()?;
+        let duration = tokens[4].parse::<f64>()?;
         let winner = tokens[2];
         let loser = if tokens[0] != winner {
             tokens[0]
@@ -54,10 +49,9 @@ impl Game {
            })
     }
 
-    pub fn get_all(conn: &postgres::Connection) -> Result<Vec<Game>, VeloError> {
+    pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Game>> {
         let mut ret = vec![];
-        for row in conn.query("SELECT * FROM games order by start_time DESC", &[])
-                .map_err(|e| VeloError::DbError(e.description().into()))?
+        for row in conn.query("SELECT * FROM games order by start_time DESC", &[])?
                 .iter() {
             let winner_str: String = row.get(1);
             let loser_str: String = row.get(2);

@@ -6,6 +6,9 @@
 extern crate lazy_static;
 
 extern crate chrono;
+#[macro_use]
+extern crate derive_error_chain;
+extern crate error_chain;
 extern crate postgres;
 extern crate r2d2;
 extern crate r2d2_postgres;

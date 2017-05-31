@@ -1,8 +1,7 @@
-use error::VeloError;
+use error;
 use id::Id;
 use postgres;
 use regex::Regex;
-use std::error::Error;
 
 pub type Elo = i16; // realistic range: 500-3000
 
@@ -16,7 +15,7 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn parse(tommi_line: &str) -> Result<Player, String> {
+    pub fn parse(tommi_line: &str) -> error::Result<Player> {
         lazy_static! {
             // data from Velo: 64-character alphanumeric id, name
             static ref PARSER_RE: Regex = Regex::new("^([[:alnum:]]{64}),([^,]*)$").unwrap();
@@ -33,15 +32,13 @@ impl Player {
                        elo: UNDEFINED_ELO,
                    })
             }
-            None => Err(format!("Could not parse the player line: {}", tommi_line)),
+            None => Err(format!("Could not parse the player line: {}", tommi_line).into()),
         }
     }
 
-    pub fn get_all(conn: &postgres::Connection) -> Result<Vec<Player>, VeloError> {
+    pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Player>> {
         let mut ret = vec![];
-        for row in conn.query("SELECT * FROM players", &[])
-                .map_err(|e| VeloError::DbError(e.description().into()))?
-                .iter() {
+        for row in conn.query("SELECT * FROM players", &[])?.iter() {
             let id_str: String = row.get(0);
             if let Ok(id) = Id::new(&id_str[..]) {
                 ret.push(Player {

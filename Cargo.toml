@@ -4,6 +4,8 @@ name = "velo-backend"
 version = "0.1.0"
 
 [dependencies]
+derive-error-chain = "0.10.1"
+error-chain = "0.10.0"
 lazy_static = "0.2.8"
 r2d2 = "0.7.2"
 r2d2-diesel = "0.13.0"
