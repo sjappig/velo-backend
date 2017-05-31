@@ -38,7 +38,7 @@ impl Player {
 
     pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Player>> {
         let mut ret = vec![];
-        for row in conn.query("SELECT * FROM players", &[])?.iter() {
+        for row in conn.query("SELECT * FROM players ORDER BY elo DESC", &[])?.iter() {
             let id_str: String = row.get(0);
             if let Ok(id) = Id::new(&id_str[..]) {
                 ret.push(Player {
