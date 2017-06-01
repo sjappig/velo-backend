@@ -38,13 +38,14 @@ impl Player {
 
     pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Player>> {
         let mut ret = vec![];
-        for row in conn.query("SELECT * FROM players ORDER BY elo DESC", &[])?.iter() {
+        for row in conn.query("SELECT * FROM players ORDER BY elo DESC", &[])?
+                .iter() {
             let id_str: String = row.get(0);
             if let Ok(id) = Id::new(&id_str[..]) {
                 ret.push(Player {
                              id,
                              name: row.get(1),
-                             elo: row.get::<usize, f64>(3) as Elo,
+                             elo: row.get::<usize, i32>(3) as Elo,
                          });
             } else {
                 println!("Could not add player with id: {}", id_str);
