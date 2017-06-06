@@ -1,4 +1,5 @@
 use error;
+use error::{Error, ErrorKind};
 use id::Id;
 use postgres;
 use regex::Regex;
@@ -34,6 +35,22 @@ impl Player {
             }
             None => Err(format!("Could not parse the player line: {}", tommi_line).into()),
         }
+    }
+
+    pub fn get(conn: &postgres::Connection, id: &Id) -> error::Result<Player> {
+        if let Some(row) = conn.query("SELECT * FROM players WHERE id = $1", &[&**id])?
+               .iter()
+               .nth(0) {
+            let id_str: String = row.get(0);
+            if let Ok(id) = Id::new(&id_str[..]) {
+                return Ok(Player {
+                              id,
+                              name: row.get(1),
+                              elo: row.get::<usize, i32>(3) as Elo,
+                          });
+            }
+        }
+        Err(Error::from_kind(ErrorKind::PlayerNotFound))
     }
 
     pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Player>> {

@@ -1,3 +1,4 @@
+use id::Id;
 use player::Player;
 use super::prelude::*;
 
@@ -11,8 +12,13 @@ pub fn players(pool: State<db::ConnectionPool>) -> HandlerResult {
 }
 
 #[get("/player/<id>")]
-pub fn player(id: String) -> String {
-    "Ismo".into()
+pub fn player(pool: State<db::ConnectionPool>, id: String) -> HandlerResult {
+    let id = Id::new(&id[..]).map_err(super::error_to_json)?;
+    let conn = pool.get().map_err(super::error_to_json)?;
+    let player = Player::get(&conn, &id).map_err(super::error_to_json)?;
+    Ok(JSON(json!({
+        "players": &[player],
+    })))
 }
 
 #[post("/player", format = "application/json", data = "<player>")]
