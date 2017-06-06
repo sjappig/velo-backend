@@ -1,0 +1,3 @@
+DROP TRIGGER calculate_elo ON games;
+CREATE TRIGGER calculate_elo BEFORE INSERT OR UPDATE ON games
+FOR EACH ROW EXECUTE PROCEDURE calculate_elo();
