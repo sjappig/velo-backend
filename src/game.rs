@@ -41,32 +41,35 @@ impl Game {
         let loser = Id::new(loser).map_err(|e| e.0)?;
 
         Ok(Game {
-               start_time: Local.ymd(2001, 1, 1).and_hms(0, 0, 0) +
-                           chrono::Duration::seconds(timestamp as i64),
-               duration: Duration::from_secs(duration as u64),
-               winner,
-               loser,
-           })
+            start_time: Local.ymd(2001, 1, 1).and_hms(0, 0, 0) +
+                chrono::Duration::seconds(timestamp as i64),
+            duration: Duration::from_secs(duration as u64),
+            winner,
+            loser,
+        })
     }
 
     pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Game>> {
         let mut ret = vec![];
         for row in conn.query("SELECT * FROM games order by start_time DESC", &[])?
-                .iter() {
+            .iter()
+        {
             let winner_str: String = row.get(1);
             let loser_str: String = row.get(2);
             if let (Ok(winner), Ok(loser)) = (Id::new(&winner_str[..]), Id::new(&loser_str[..])) {
                 ret.push(Game {
-                             winner,
-                             loser,
-                             start_time: row.get(3),
-                             duration: Duration::from_secs(row.get::<usize, i32>(4) as u64),
-                         });
+                    winner,
+                    loser,
+                    start_time: row.get(3),
+                    duration: Duration::from_secs(row.get::<usize, i32>(4) as u64),
+                });
             } else {
                 // TODO: Logging
-                println!("Could not add game between {} and {}",
-                         winner_str,
-                         loser_str);
+                println!(
+                    "Could not add game between {} and {}",
+                    winner_str,
+                    loser_str
+                );
             }
         }
         Ok(ret)
@@ -75,7 +78,8 @@ impl Game {
 
 impl Serialize for Game {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
         let mut state = serializer.serialize_struct("Game", 4)?;
         state.serialize_field("winner", &self.winner)?;
@@ -112,14 +116,20 @@ mod tests {
 
         match Game::new(&valid_line) {
             Ok(result) => {
-                assert_eq!(Game {
-                               start_time: Local.ymd(2001, 1, 1).and_hms(0, 0, 0) +
-                                           chrono::Duration::seconds(516099153),
-                               duration: Duration::from_secs(337),
-                               winner: Id::new("1hMduK6YEqJeAeZvd2bI9mI5bWSnRSZihsH5XdjdpViWPZiGK5cH8L0JVkbTEb0A").unwrap(),
-                               loser: Id::new("muBF4sNpDCwLqLiVne7M8WtW6DJg1OQrbumx1HpBmkfVVsv7c1iNhHf3SBNNQd6s").unwrap(),
-                           },
-                           result)
+                assert_eq!(
+                    Game {
+                        start_time: Local.ymd(2001, 1, 1).and_hms(0, 0, 0) +
+                            chrono::Duration::seconds(516099153),
+                        duration: Duration::from_secs(337),
+                        winner: Id::new(
+                            "1hMduK6YEqJeAeZvd2bI9mI5bWSnRSZihsH5XdjdpViWPZiGK5cH8L0JVkbTEb0A",
+                        ).unwrap(),
+                        loser: Id::new(
+                            "muBF4sNpDCwLqLiVne7M8WtW6DJg1OQrbumx1HpBmkfVVsv7c1iNhHf3SBNNQd6s",
+                        ).unwrap(),
+                    },
+                    result
+                )
             }
             Err(err) => panic!("Should not fail: {}", err),
         }

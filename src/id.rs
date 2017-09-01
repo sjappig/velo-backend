@@ -25,10 +25,14 @@ impl<'a> PartialEq<&'a str> for Id {
 impl Id {
     pub fn new(id: &str) -> Result<Id, Error> {
         if id.len() != 64 {
-            return Err(Error::from_kind(ErrorKind::IdError("Wrong length for Id".into())));
+            return Err(Error::from_kind(
+                ErrorKind::IdError("Wrong length for Id".into()),
+            ));
         }
         if !id.chars().all(|c| char::is_ascii_alphanumeric(&c)) {
-            return Err(Error::from_kind(ErrorKind::IdError("Characters in Id must be ASCII alphanumeric".into())));
+            return Err(Error::from_kind(ErrorKind::IdError(
+                "Characters in Id must be ASCII alphanumeric".into(),
+            )));
         }
         Ok(Id(id.to_owned()))
     }

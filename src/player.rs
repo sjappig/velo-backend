@@ -28,26 +28,29 @@ impl Player {
                 let name = String::from(&captures[2]);
 
                 Ok(Player {
-                       name: name,
-                       id: Id::new(&id[..]).unwrap(),
-                       elo: UNDEFINED_ELO,
-                   })
+                    name: name,
+                    id: Id::new(&id[..]).unwrap(),
+                    elo: UNDEFINED_ELO,
+                })
             }
-            None => Err(format!("Could not parse the player line: {}", tommi_line).into()),
+            None => Err(
+                format!("Could not parse the player line: {}", tommi_line).into(),
+            ),
         }
     }
 
     pub fn get(conn: &postgres::Connection, id: &Id) -> error::Result<Player> {
         if let Some(row) = conn.query("SELECT * FROM players WHERE id = $1", &[&**id])?
-               .iter()
-               .nth(0) {
+            .iter()
+            .nth(0)
+        {
             let id_str: String = row.get(0);
             if let Ok(id) = Id::new(&id_str[..]) {
                 return Ok(Player {
-                              id,
-                              name: row.get(1),
-                              elo: row.get::<usize, i32>(3) as Elo,
-                          });
+                    id,
+                    name: row.get(1),
+                    elo: row.get::<usize, i32>(3) as Elo,
+                });
             }
         }
         Err(Error::from_kind(ErrorKind::PlayerNotFound))
@@ -56,14 +59,15 @@ impl Player {
     pub fn get_all(conn: &postgres::Connection) -> error::Result<Vec<Player>> {
         let mut ret = vec![];
         for row in conn.query("SELECT * FROM players ORDER BY elo DESC", &[])?
-                .iter() {
+            .iter()
+        {
             let id_str: String = row.get(0);
             if let Ok(id) = Id::new(&id_str[..]) {
                 ret.push(Player {
-                             id,
-                             name: row.get(1),
-                             elo: row.get::<usize, i32>(3) as Elo,
-                         });
+                    id,
+                    name: row.get(1),
+                    elo: row.get::<usize, i32>(3) as Elo,
+                });
             } else {
                 println!("Could not add player with id: {}", id_str);
             }
@@ -84,8 +88,10 @@ mod tests {
         let player: Player = Player::parse(TEST_LINE).unwrap();
 
         assert_eq!("Ismo", player.name);
-        assert_eq!("yBsgFK65Je24kPStpG60mySQAstqtZytURNqUPb8fXbWNTD93tNCMkl2Jhzv7ymy",
-                   *player.id);
+        assert_eq!(
+            "yBsgFK65Je24kPStpG60mySQAstqtZytURNqUPb8fXbWNTD93tNCMkl2Jhzv7ymy",
+            *player.id
+        );
         assert_eq!(UNDEFINED_ELO, player.elo);
     }
 
